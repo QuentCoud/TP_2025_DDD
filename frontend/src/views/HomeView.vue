@@ -1,32 +1,56 @@
 <template>
   <div class="home-view">
     <nav class="navbar">
-      <div class="navbar-center">Bienvenue</div>
-      <div class="navbar-icon" @click="handleClick">
+      <div class="navbar-center">Artiste matching</div>
+      <div class="navbar-icon" @click="toggleMenu">
         <i class="mdi mdi-cog"></i>
+        <div v-if="showMenu" class="dropdown-menu">
+          <div @click="goToProfile">Profile</div>
+          <div @click="logout">Déconnexion</div>
+        </div>
       </div>
     </nav>
 
     <div class="content">
-      <p>Test</p>
+      <ArtistSearching />
+      <ConcertOwnerSearching />
+      <AdminCrud />
     </div>
   </div>
 </template>
-
 <script setup>
-const handleClick = () => {
-  alert('Icône cliquée !')
+import ArtistSearching from '@/components/ArtistSearching.vue'
+import ConcertOwnerSearching from '@/components/ConcertOwnerSearching.vue'
+import AdminCrud from '@/components/AdminCrud.vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const showMenu = ref(false)
+
+const toggleMenu = () => {
+  showMenu.value = !showMenu.value
+}
+
+const goToProfile = () => {
+  router.push({ name: 'Profile' })
+}
+
+const logout = () => {
+  localStorage.removeItem('access')
+  localStorage.removeItem('refresh')
+  alert('Déconnecté !')
+  router.push({ name: 'Connexion' })
 }
 </script>
-
 <style scoped>
 .navbar {
-  position: fixed; /* fixée en haut de l'écran */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10;
-  width: 100vw; /* toute la largeur visible */
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,10 +58,6 @@ const handleClick = () => {
   background-color: #007bff;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.content {
-  padding: 2rem;
-  padding-top: 80px; /* espace pour éviter d'être masqué par la navbar */
 }
 
 .navbar-center {
@@ -56,7 +76,31 @@ const handleClick = () => {
   transform: scale(1.1);
 }
 
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 1rem;
+  background-color: white;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+
+.dropdown-menu div {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.dropdown-menu div:hover {
+  background-color: #f1f1f1;
+}
+
 .content {
   padding: 2rem;
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
 }
 </style>

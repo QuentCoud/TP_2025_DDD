@@ -1,18 +1,20 @@
 <template>
-  <div class="auth">
-    <h2>{{ isLogin ? "Connexion" : "Inscription" }}</h2>
-    
-    <form @submit.prevent="submit">
-      <input v-model="username" placeholder="Nom d'utilisateur" required />
-      <input type="password" v-model="password" placeholder="Mot de passe" required />
-      <button type="submit">{{ isLogin ? "Se connecter" : "S'inscrire" }}</button>
-    </form>
-    
-    <p @click="toggleMode" style="cursor: pointer;">
-      {{ isLogin ? "Pas de compte ? Inscris-toi ici" : "Déjà un compte ? Connecte-toi ici" }}
-    </p>
-    
-    <p v-if="error" style="color: red;">{{ error }}</p>
+  <div class="auth-wrapper">
+    <div class="auth">
+      <h2>{{ isLogin ? "Connexion" : "Inscription" }}</h2>
+      
+      <form @submit.prevent="submit">
+        <input v-model="username" placeholder="Nom d'utilisateur" required />
+        <input type="password" v-model="password" placeholder="Mot de passe" required />
+        <button type="submit">{{ isLogin ? "Se connecter" : "S'inscrire" }}</button>
+      </form>
+      
+      <p @click="toggleMode" style="cursor: pointer;">
+        {{ isLogin ? "Pas de compte ? Inscris-toi ici" : "Déjà un compte ? Connecte-toi ici" }}
+      </p>
+      
+      <p v-if="error" style="color: red;">{{ error }}</p>
+    </div>
   </div>
 </template>
 
@@ -60,6 +62,13 @@ const submit = async () => {
 </script>
 
 <style scoped>
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* prend toute la colonne centrale */
+}
+
 .auth {
   max-width: 400px;
   margin: 5rem auto;
