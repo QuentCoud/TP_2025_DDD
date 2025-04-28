@@ -15,19 +15,7 @@
 
 <script setup>
 import { ref } from 'vue'
-
-const styles = [
-  'Rock',
-  'Pop',
-  'Jazz',
-  'Hip-Hop',
-  'Classique',
-  'Électro',
-  'Reggae',
-  'Blues',
-  'Funk',
-  'Country'
-]
+import { styles } from '@/const.js' 
 
 const selectedStyle = ref('')
 
@@ -42,17 +30,18 @@ const search = () => {
 
 <style scoped>
 .card {
-  background-color: #1e1e1e;
+  background-color: #ffffff;
   padding: 2rem;
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   text-align: center;
+  border: 1px solid black;
 }
 
 .card-title {
-  color: white;
+  color: rgb(0, 0, 0);
   margin-bottom: 1rem;
 }
 

@@ -46,13 +46,11 @@ const submit = async () => {
       localStorage.setItem('access', res.data.access)
       localStorage.setItem('refresh', res.data.refresh)
       router.push({ name: 'Home' })
-      alert('Connecté !')
     } else {
       await axios.post('http://localhost:8000/api/register/', {
         username: username.value,
         password: password.value,
       })
-      alert('Inscription réussie, connecte-toi !')
       isLogin.value = true
     }
   } catch (e) {
@@ -66,17 +64,17 @@ const submit = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* prend toute la colonne centrale */
+  min-height: 100vh;
 }
 
 .auth {
   max-width: 400px;
-  margin: 5rem auto;
   padding: 2rem;
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-family: 'Roboto', sans-serif;
+  border: 1px solid black;
 }
 
 .auth h2 {
