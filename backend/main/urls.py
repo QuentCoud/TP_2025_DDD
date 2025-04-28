@@ -1,9 +1,10 @@
 from django.urls import path
-from main import views
+from .views import PublicView, ArtistView, ConcertOwnerView, AllAuthView, AdminView
 
 urlpatterns = [
-    path('signup', views.signup),
-    path('login', views.login_view),
-    path('test-proprietaire', views.test_proprietaire),
-    path('test-artist', views.test_artiste)
+    path('public/', PublicView.as_view(), name='public_view'),
+    path('concert_owner/', ConcertOwnerView.as_view(), name='concert_owner_view'),
+    path('artist/', ArtistView.as_view(), name='artist_view'),
+    path('authenticated/', AllAuthView.as_view(), name='all_authenticated_view'),
+    path('admin/', AdminView.as_view(), name='admin_view'),
 ]

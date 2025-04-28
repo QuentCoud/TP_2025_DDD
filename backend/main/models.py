@@ -3,8 +3,8 @@ from django.db import models
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('artiste', 'Artiste'),
-        ('proprietaire', 'Propriétaire'),
+        ('artist', 'Artist'),
+        ('owner', 'ConcertOwner'),
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
@@ -13,17 +13,19 @@ class User(AbstractUser):
 
 class Artist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    genre = models.JSONField()
-
+    genre = models.JSONField(null=True)
+    followers = models.IntegerField(default=0)
+    
     class Meta:
         permissions = [
             ('get_countries', 'Can get countries'),  # Cette permission sera utilisée dans la commande d'attribution des permissions
         ]
 
 
-class ConcertOwner(models.Model):
+class   ConcertOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    adress = models.CharField(max_length=255)
+    adress = models.CharField(null=True, max_length=255)
+    capacity = models.IntegerField(default=0)
 
     class Meta:
         permissions = [
