@@ -5,6 +5,7 @@
       <div class="navbar-icon" @click="toggleMenu">
         <i class="mdi mdi-cog"></i>
         <div v-if="showMenu" class="dropdown-menu">
+          <div @click="goToHome">Artiste matching</div>
           <div @click="goToProfile">Profile</div>
           <div @click="logout">Déconnexion</div>
         </div>
@@ -14,7 +15,7 @@
     <div class="content">
       <ArtistSearching />
       <ConcertOwnerSearching />
-      <AdminCrud />
+      <AdminCrud  />
     </div>
   </div>
 </template>
@@ -24,12 +25,16 @@ import ConcertOwnerSearching from '@/components/ConcertOwnerSearching.vue'
 import AdminCrud from '@/components/AdminCrud.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+const test = false
 const router = useRouter()
 const showMenu = ref(false)
 
 const toggleMenu = () => {
   showMenu.value = !showMenu.value
+}
+
+const goToHome = () => {
+  router.push({ name: 'Home' })
 }
 
 const goToProfile = () => {
@@ -39,7 +44,6 @@ const goToProfile = () => {
 const logout = () => {
   localStorage.removeItem('access')
   localStorage.removeItem('refresh')
-  alert('Déconnecté !')
   router.push({ name: 'Connexion' })
 }
 </script>
@@ -70,10 +74,6 @@ const logout = () => {
   right: 1rem;
   cursor: pointer;
   font-size: 1.5rem;
-}
-
-.navbar-icon:hover {
-  transform: scale(1.1);
 }
 
 .dropdown-menu {
