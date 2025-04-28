@@ -6,45 +6,44 @@ from main.models import User, Artist, ConcertOwner, Admin
 class Command(BaseCommand):
     help = 'Création des groupes et permissions de base'
 
+
+    artist_permissions = ['get_countries']
+    owner_permissions = ['get_artists']
+    admin_permissions = ['add_user', 'delete_user', 'edit_other', 'add_country', 'edit_country', 'delete_country']
+
     permissions_rule = {
-        'Artist': {'rules': ['get_country'], 'model': ContentType.objects.get_for_model(Artist) },
-        'ConcertOwner': {'rules': ['get_artists'], 'model': ContentType.objects.get_for_model(ConcertOwner) },
-        'User': {'rules': ['edit_me'], 'model': ContentType.objects.get_for_model(User) },
-        'Admin': {'rules': ['add_user', 'edit_user', 'delete_user'], 'model': ContentType.objects.get_for_model(Admin) }
+        'Artist': {
+            'rules': artist_permissions,
+            'model': Artist
+        },
+        'ConcertOwner': {
+            'rules': owner_permissions,
+            'model': ConcertOwner
+        },
+        'User': {
+            'rules': [],
+            'model': User 
+        },
+        'Admin': {
+            'rules': list(set(artist_permissions + owner_permissions)),
+            'model': Admin 
+        }
     }
 
     def handle(self, *args, **options):
-        # Créer les groupes
-        artiste_group, _ = Group.objects.get_or_create(name='artist')
-        proprio_group, _ = Group.objects.get_or_create(name='concertOwner')
-        admin_group, _ = Group.objects.get_or_create(name='admin')
+        for group_name, config in self.permissions_rule.items():
+            group, created = Group.objects.get_or_create(name=group_name)
+            model = config['model']
+            content_type = ContentType.objects.get_for_model(model)
 
-        self.stdout.write(self.style.SUCCESS('Groupes créés ou existants'))
+            for rule_codename in config['rules']:
+                permission, perm_created = Permission.objects.get_or_create(
+                    codename=rule_codename,
+                    content_type=content_type,
+                    defaults={'name': f'Can {rule_codename.replace("_", " ")}'}
+                )
+                group.permissions.add(permission)
 
-        # Exemple : ajouter des permissions
-        # Tu peux adapter ça à tes modèles
-        # Ici juste un exemple pour les permissions de base User
+            self.stdout.write(self.style.SUCCESS(f"Groupe '{group_name}' configuré avec ses permissions."))
 
-        user_content_type = ContentType.objects.get_for_model(User)
-
-        print(self.permissions_rule)
-
-        for e in self.permissions_rule:
-            print(e)
-            
-        # for rule in list(self.permissions_rule.keys()):
-        #     for permission in self.permissions_rule[rule]:
-        #         try:
-        #             permission_obj = Permission.objects.get(codename=permission, content_type=user_content_type)
-        #             if rule == 'Artist':
-        #                 artiste_group.permissions.add(permission_obj)
-        #             elif rule == 'ConcertOwner':
-        #                 proprio_group.permissions.add(permission_obj)
-        #             elif rule == 'Admin':
-        #                 admin_group.permissions.add(permission_obj)
-        #         except Permission.DoesNotExist:
-        #             self.stdout.write(self.style.WARNING(f'Permission {permission} non trouvée pour le modèle {rule}'))
-        # can_change = Permission.objects.get(codename='change_user', content_type=user_content_type)
-
-        # artiste_group.permissions.add(can_change)
-        # self.stdout.write(self.style.SUCCESS('Permissions ajoutées au groupe Artiste'))
+        self.stdout.write(self.style.SUCCESS('✅ Tous les groupes et permissions ont été créés avec succès.'))
