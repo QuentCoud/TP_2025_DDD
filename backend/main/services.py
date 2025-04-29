@@ -61,7 +61,7 @@ class UserService:
 
         for field, value in params.items():
             if field in (allowed_fields + user_fields):
-                if field in user_fields:
+                if field in user_fields and len(value) > 0 and value[0]:
                     setattr(model.user, field, value[0])
                 else:
                     setattr(model, field, value[0])
