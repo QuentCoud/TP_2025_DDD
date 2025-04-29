@@ -13,9 +13,9 @@
     </nav>
 
     <div class="content">
-      <ArtistSearching v-if="currentUser.role == 'Artist'"/>
-      <ConcertOwnerSearching v-if="currentUser.role == 'ConcertOwner'"/>
-      <AdminCrud v-if="currentUser.role == 'Admin'"/>
+      <ArtistSearching v-if="currentUser.user.role == 'artist'"/>
+      <ConcertOwnerSearching v-if="currentUser.user.role == 'ConcertOwner'"/>
+      <AdminCrud v-if="currentUser.user.role == 'Admin'"/>
     </div>
   </div>
 </template>
@@ -30,7 +30,6 @@ import { useUser } from '@/stores/user.js'
 const userStore = useUser()
 
 const currentUser = userStore.getCurrentUser
-
 const router = useRouter()
 const showMenu = ref(false)
 

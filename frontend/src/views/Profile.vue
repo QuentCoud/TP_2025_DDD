@@ -17,23 +17,23 @@
         <h2 class="card-title">Editez votre profile</h2>
         <h3>Nom d'utilisateur</h3>
         <input 
-          v-model="form.username"
+          v-model="form.user.username"
           style="width: 92%;"
         />
-        <h3 v-if="currentUser.role == 'Artist'">Followers</h3>
+        <h3 v-if="currentUser.user.role == 'artist'">Followers</h3>
         <input 
-          v-if="currentUser.role == 'Artist'"
+          v-if="currentUser.user.role == 'artist'"
           v-model="form.followers"
           style="width: 92%;"
         />
-        <h3 v-if="currentUser.role == 'ConcertOwner'">Capacité</h3>
+        <h3 v-if="currentUser.user.role == 'ConcertOwner'">Capacité</h3>
         <input 
-          v-if="currentUser.role == 'ConcertOwner'"
+          v-if="currentUser.user.role == 'ConcertOwner'"
           v-model="form.capacity"
           style="width: 92%;"
         />
-        <h3 v-if="currentUser.role == 'Artist'">Genre musical</h3>
-        <div v-if="currentUser.role == 'Artist'" class="search-bar">
+        <h3 v-if="currentUser.user.role == 'artist'">Genre musical</h3>
+        <div v-if="currentUser.user.role == 'artist'" class="search-bar">
           <select v-model="form.genre">
             <option disabled value="">-- Choisissez un genre --</option>
             <option v-for="genre in genres" :key="genre" :value="genre">
@@ -43,7 +43,7 @@
         </div>
         <h3>Localisation</h3>
         <div class="search-bar">
-          <select v-model="form.country">
+          <select v-model="form.user.country">
             <option disabled value="">-- Choisissez un pays --</option>
             <option v-for="country in countries" :key="country.code" :value="country.code">
               {{ country["name"] }}
@@ -60,6 +60,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { genres, countries } from '@/const.js' 
 import { useUser } from '@/stores/user'
+import axios from 'axios'
 
 const userStore = useUser()
 
@@ -67,24 +68,62 @@ const router = useRouter()
 const showMenu = ref(false)
 const form = ref({
   username: '',
-  genre: '',
   country: '',
+  genre: '',
+  followers: '',
+  capacity: '',
 })
+
 const currentUser = userStore.getCurrentUser
 
 if (currentUser) {
+  let parsedGenre = ''
+  try {
+    parsedGenre = JSON.parse(currentUser.genre.replace(/'/g, '"'))
+  } catch (e) {
+    console.warn('Impossible de parser le genre', currentUser.genre)
+  }
+  
   Object.assign(form.value, {
-    username: currentUser.username || '',
-    genre: currentUser.genre || '',
-    country: currentUser.country || '',
+    user: {
+      username: currentUser.user.username || '',
+      country: currentUser.user.country || '',
+      role: currentUser.user.role || '',
+    },
+    genre: parsedGenre,
     followers: currentUser.followers || '',
     capacity: currentUser.capacity || '',
   })
 }
 
-const updateUserProfile = () => {
-  // TODO : Implement the API call to update the user profile
+const updateUserProfile = async () => {
+  try {
+    const token = localStorage.getItem('access')
+
+    if (!token) {
+      console.error("Token d'accès non trouvé")
+      return
+    }
+
+    const response = await axios.post(
+      'http://localhost:8000/api/me',
+      form.value,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    userStore.setUser(response.data)
+
+    alert('Profil mis à jour avec succès !')
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du profil :', error)
+    alert('Échec de la mise à jour du profil')
+  }
 }
+
 
 const toggleMenu = () => {
   showMenu.value = !showMenu.value
