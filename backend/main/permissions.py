@@ -14,4 +14,4 @@ class IsAdminOrConcertOwner(permissions.BasePermission):
     
 class IsAdminOrArtist(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.role == 'concert_owner' or request.user.role == 'artist'
+        return request.user.role == 'artist' or request.user.role == 'admin'
