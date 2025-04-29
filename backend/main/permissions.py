@@ -7,3 +7,11 @@ class IsArtist(permissions.BasePermission):
 class IsConcertOwner(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.role == 'concert_owner'
+    
+class IsAdminOrConcertOwner(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'concert_owner' or request.user.role == 'admin'
+    
+class IsAdminOrArtist(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.role == 'concert_owner' or request.user.role == 'artist'

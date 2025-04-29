@@ -23,26 +23,10 @@ class CountrySerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'role']
+        fields = ['id', 'username', 'role', 'country']
 
 class ArtistSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        genre_value = rep.get('genre')
-
-        print(genre_value[0])
-        if isinstance(genre_value, str):
-            try:
-                import json
-                parsed = json.loads(genre_value)
-                if isinstance(parsed, list):
-                    rep['genre'] = parsed
-            except json.JSONDecodeError:
-                pass
-
-        return rep
     
     class Meta:
         model = Artist
@@ -55,3 +39,10 @@ class ConcertOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConcertOwner
         fields = ['user', 'adress', 'capacity']
+
+class AdminSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = User
+        fields = ['user']

@@ -1,7 +1,6 @@
-from .models import Country, Artist, ConcertOwner, User
-from .serializers import CountrySerializer  , ConcertOwnerSerializer, ArtistSerializer, UserSerializer
+from .models import Country, Artist, ConcertOwner, User, Admin
+from .serializers import CountrySerializer  , ConcertOwnerSerializer, ArtistSerializer, UserSerializer, AdminSerializer
 from .constants import COUNTRY_CODE, GENRE_MAPPING
-import json
 
 
 class UserService:
@@ -10,6 +9,8 @@ class UserService:
             model = Artist
         elif user.role == 'owner':
             model = ConcertOwner
+        elif user.role == 'admin':
+            model = Admin
         else:
             model = User
         
@@ -20,6 +21,8 @@ class UserService:
             serializer = ArtistSerializer
         elif user.role == 'owner':
             serializer = ConcertOwnerSerializer
+        elif user.role == 'admin':
+            serializer = AdminSerializer
         else:
             serializer = UserSerializer
         
@@ -27,57 +30,74 @@ class UserService:
 
     def _getUserModel(self, user):
         model = self._getModel(user)
-        return model.objects.get(id=user.id)
+        return model.objects.get(user__id=user.id)
 
     def getMe(self, user):
         serializer = self._getSerializer(user)
-        
         return serializer(self._getUserModel(user)).data
+
+    def getUser(self, id):
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return None
         
+        return user
+    
+    def getAllUsers(self):
+        queryset = User.objects.exclude(role='admin')
+        serializer = UserSerializer(queryset, many=True)
+        
+        return serializer.data
+
     def updateMe(self, user, params):
         allowed_fields = ['genre', 'followers', 'adress', 'capacity']
-        user_fields = ['username']
+        user_fields = ['username', 'country']
 
         model = self._getUserModel(user)
         serializer = self._getSerializer(user)
 
         # TODO REVOIR POUR UPDATE DU GENRE
-        
+
         for field, value in params.items():
             if field in (allowed_fields + user_fields):
                 if field in user_fields:
                     setattr(model.user, field, value[0])
                 else:
-                    if field == 'genre':
-                        value = json.dumps(value[0])
-
                     setattr(model, field, value[0])
         
         model.save()
+        model.user.save()
+
         return serializer(model).data
 
 class CountriesService:
     def searchCountries(self, filters):
         limit = filters.get('limit', [10])[0]
-        genres = filters.get('genres', [])
-
-        if genres:
-            genres = genres[0].split(',')
+        genre = filters.get('genres', [])
         
-        invalid_genres = [g for g in genres if g not in GENRE_MAPPING.values()]
+        if len(genre) > 0:
+            genre = genre[0]
+        
+        if not genre in GENRE_MAPPING.values():
+            raise ValueError(f"Genres invalides : {genre}")
 
-        if invalid_genres:
-            raise ValueError(f"Genres invalides : {invalid_genres}")
+        genre = [k for k, v in GENRE_MAPPING.items() if v == genre][0]
 
-        genres = [k for k, v in GENRE_MAPPING.items() if v in genres]
-
-        if genres:
-            ordering = [f'-{genre}' for genre in genres]
-            queryset = Country.objects.all().order_by(*ordering)
+        if genre:
+            queryset = Country.objects.all().order_by(f'-{genre}')
         else:
             queryset = Country.objects.all()
 
         queryset = queryset[:int(limit)]
         serializer = CountrySerializer(queryset, many=True)
+
+        return serializer.data
+    
+
+class ArtistService:
+    def searchArtists(self, country_code):
+        artists = Artist.objects.filter(user__country=country_code).order_by('-followers')
+        serializer = ArtistSerializer(artists, many=True)
 
         return serializer.data

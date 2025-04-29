@@ -5,47 +5,24 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ('artist', 'Artist'),
         ('owner', 'ConcertOwner'),
+        ('admin', 'Admin')
     )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
-    class Meta:
-        permissions = []
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    country = models.CharField(max_length=5, null=True, blank=True)
 
 class Artist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    genre = models.JSONField(null=True)
+    genre = models.CharField(max_length=255, null=True)
     followers = models.IntegerField(default=0)
     
-    class Meta:
-        permissions = [
-            ('get_countries', 'Can get countries'),  # Cette permission sera utilisée dans la commande d'attribution des permissions
-        ]
-
-
 class  ConcertOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     adress = models.CharField(null=True, max_length=255)
     capacity = models.IntegerField(default=0)
 
-    class Meta:
-        permissions = [
-            ('get_artists', 'Can get artists'),
-        ]
-
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    class Meta:
-        permissions = [
-            ('get_countries', 'Can get countries'),
-            ('get_artists', 'Can get artists'),
-            ('add_user', 'Can add user'),
-            ('delete_user', 'Can delete user'),
-            ('edit_other', 'Can edit other users'),
-            ('add_country', 'Can add country'),
-            ('edit_country', 'Can edit country'),
-            ('delete_country', 'Can delete country'),
-        ]
 
 class Country(models.Model):
     id = models.AutoField(primary_key=True)
