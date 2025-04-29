@@ -5,7 +5,13 @@
       
       <form @submit.prevent="submit">
         <input v-model="username" placeholder="Nom d'utilisateur" required />
-        <input type="password" v-model="password" placeholder="Mot de passe" required />
+        <input type="password" v-model="password" required />
+        <select v-if="!isLogin" v-model="role">
+          <option disabled value="">-- Choisissez un rôle --</option>
+          <option v-for="role in roles" :key="role" :value="role">
+            {{ role }}
+          </option>
+        </select>
         <button type="submit">{{ isLogin ? "Se connecter" : "S'inscrire" }}</button>
       </form>
       
@@ -22,12 +28,15 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import { roles } from '@/const.js' 
+
 
 const router = useRouter()
 
 const isLogin = ref(true)
 const username = ref('')
 const password = ref('')
+const role = ref('')
 const error = ref('')
 
 const toggleMode = () => {
@@ -39,7 +48,7 @@ const submit = async () => {
   try {
     error.value = ''
     if (isLogin.value) {
-      const res = await axios.post('http://localhost:8000/api/token/', {
+      const res = await axios.post('http://localhost:8000/api/login/', {
         username: username.value,
         password: password.value,
       })
@@ -47,9 +56,10 @@ const submit = async () => {
       localStorage.setItem('refresh', res.data.refresh)
       router.push({ name: 'Home' })
     } else {
-      await axios.post('http://localhost:8000/api/register/', {
+      await axios.post('http://localhost:8000/api/signup/', {
         username: username.value,
         password: password.value,
+        role: role.value
       })
       isLogin.value = true
     }
@@ -57,6 +67,7 @@ const submit = async () => {
     error.value = e.response?.data?.detail || e.response?.data?.error || 'Erreur inconnue'
   }
 }
+
 </script>
 
 <style scoped>
@@ -90,6 +101,14 @@ const submit = async () => {
 }
 
 .auth input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.auth select {
   padding: 0.75rem 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
