@@ -9,7 +9,8 @@
         </option>
       </select>
       <button @click="search">Rechercher</button>
-      <div v-if="searchResults.length > 0" class="results">
+    </div>
+    <div v-if="searchResults.length > 0" class="results">
         <h3>Pays avec les meilleurs scores pour ce genre :</h3>
         <ul>
           <li v-for="country in searchResults" :key="country.code">
@@ -17,7 +18,6 @@
           </li>
         </ul>
       </div>
-    </div>
   </div>
 </template>
 
