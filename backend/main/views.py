@@ -49,13 +49,7 @@ class meView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        print("111111111\n"*5)
-        print(request.user)
-        print("111111111\n"*5)
         return Response(UserService().getMe(request.user))
 
     def post(self, request):
-        print("2222222222222\n"*5)
-        print(request.user)
-        print("2222222222222\n"*5)
         return Response(UserService().updateMe(request.user, dict(request.data)))    

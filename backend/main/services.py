@@ -27,8 +27,7 @@ class UserService:
 
     def _getUserModel(self, user):
         model = self._getModel(user)
-        
-        return model.objects.get(user=user)
+        return model.objects.get(id=user.id)
 
     def getMe(self, user):
         serializer = self._getSerializer(user)
