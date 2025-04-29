@@ -57,19 +57,21 @@ class UserService:
         model = self._getUserModel(user)
         serializer = self._getSerializer(user)
 
-        # TODO REVOIR POUR UPDATE DU GENRE
+        user_data = params.get('user', {})
 
-        for field, value in params.items():
-            if field in (allowed_fields + user_fields):
-                if field in user_fields:
-                    setattr(model.user, field, value[0])
-                else:
-                    setattr(model, field, value[0])
-        
-        model.save()
+        for field in user_fields:
+            if field in user_data:
+                setattr(model.user, field, user_data[field])
+
+        for field in allowed_fields:
+            if field in params:
+                setattr(model, field, params[field])
+
         model.user.save()
+        model.save()
 
         return serializer(model).data
+
 
 class CountriesService:
     def searchCountries(self, filters):

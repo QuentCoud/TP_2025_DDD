@@ -37,6 +37,6 @@ export const countries = [
 ]
 
 export const roles = [
-  { code : 'Artist', name: 'Artiste' },
+  { code : 'artist', name: 'Artiste' },
   { code : 'ConcertOwner', name: 'ConcertOwner' },
 ]

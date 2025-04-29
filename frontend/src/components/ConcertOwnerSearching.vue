@@ -9,6 +9,14 @@
         </option>
       </select>
       <button @click="search">Rechercher</button>
+      <div v-if="searchResults.length > 0" class="results">
+      <h3>Artistes trouvés :</h3>
+      <ul>
+        <li v-for="artist in searchResults" :key="artist.user.id">
+          {{ artist.user.username }} - Genre : {{ artist.genre }}
+        </li>
+      </ul>
+    </div>
     </div>
   </div>
 </template>
@@ -16,14 +24,33 @@
 <script setup>
 import { ref } from 'vue'
 import { countries } from '@/const.js' 
+import axios from 'axios'
+const searchResults = ref([])
+
 
 const selectedCountryCode = ref('')
 
-const search = () => {
-  if (selectedCountryCode.value) {
-    // TODO : Implement the API call to search for artists by country
-  } else {
+const search = async () => {
+  if (!selectedCountryCode.value) {
     alert('Veuillez sélectionner un pays.')
+    return
+  }
+
+  try {
+    const token = localStorage.getItem('access')
+    const response = await axios.get(
+      `http://localhost:8000/api/artist/search?country=${selectedCountryCode.value}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    searchResults.value = response.data
+  } catch (error) {
+    console.error('Erreur lors de la recherche d’artistes :', error)
+    alert('Erreur lors de la recherche.')
   }
 }
 </script>
