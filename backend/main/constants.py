@@ -24,7 +24,6 @@ COUNTRY_CODE = {
 }
 
 GENRE_MAPPING = {
-    "slug": "country",  
     "rap_hip_hop": "Rap/Hip Hop",
     "pop": "Pop",
     "electro": "Electro",
@@ -35,8 +34,4 @@ GENRE_MAPPING = {
     "country_music": "Country",
     "trance": "Trance",
     "reggae": "Reggae",
-    "population_total": "population_total",
-    "life_expectancy": "life_expectancy",
-    "birth_rate": "birth_rate",
-    "avg_income": "avg_income"
 } 

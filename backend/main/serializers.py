@@ -28,6 +28,22 @@ class UserSerializer(serializers.ModelSerializer):
 class ArtistSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        genre_value = rep.get('genre')
+
+        print(genre_value[0])
+        if isinstance(genre_value, str):
+            try:
+                import json
+                parsed = json.loads(genre_value)
+                if isinstance(parsed, list):
+                    rep['genre'] = parsed
+            except json.JSONDecodeError:
+                pass
+
+        return rep
+    
     class Meta:
         model = Artist
         fields = ['user', 'genre', 'followers']

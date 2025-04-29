@@ -42,11 +42,14 @@ class CountriesView(APIView):
     permission_classes = [IsArtist]
 
     def get(self, request, *args, **kwargs):
-        return Response(CountriesService.searchCountries(dict(request.query_params)), status=200)
+        return Response(CountriesService().searchCountries(dict(request.query_params)), status=200)
     
 
 class meView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        return Response(UserService.getMe(request.user))
+        return Response(UserService().getMe(request.user))
+
+    def post(self, request):
+        return Response(UserService().updateMe(request.user, dict(request.data)))    
