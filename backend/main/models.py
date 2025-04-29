@@ -13,13 +13,13 @@ class User(AbstractUser):
 
 class Artist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    genre = models.CharField(max_length=255, null=True)
-    followers = models.IntegerField(default=0)
+    genre = models.CharField(max_length=255, null=True, blank=True)
+    followers = models.IntegerField(default=0, null=True, blank=True)
     
 class  ConcertOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    adress = models.CharField(null=True, max_length=255)
-    capacity = models.IntegerField(default=0)
+    adress = models.CharField(null=True, max_length=255, blank=True)
+    capacity = models.IntegerField(default=0, blank=True, null=True)
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
