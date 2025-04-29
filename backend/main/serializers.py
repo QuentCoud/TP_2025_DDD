@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import User
+from main.models import User, Country, Artist, ConcertOwner
 from django.contrib.auth import password_validation
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -14,3 +14,28 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         password_validation.validate_password(value)
         return value
+    
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = '__all__'
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'role']
+
+class ArtistSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Artist
+        fields = ['user', 'genre', 'followers']
+
+
+class ConcertOwnerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = ConcertOwner
+        fields = ['user', 'adress', 'capacity']

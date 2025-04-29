@@ -22,7 +22,7 @@ class Artist(models.Model):
         ]
 
 
-class   ConcertOwner(models.Model):
+class  ConcertOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     adress = models.CharField(null=True, max_length=255)
     capacity = models.IntegerField(default=0)

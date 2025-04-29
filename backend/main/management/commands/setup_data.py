@@ -3,33 +3,9 @@ from main.models import Country
 import csv
 import os
 from django.conf import settings
+from main.constants import COUNTRY_CODE
 
 class Command(BaseCommand):
-  COUNTRY_CODE = {
-    'AT': 'Austria',
-    'BE': 'Belgium',
-    'BG': 'Bulgaria',
-    'CZ': 'Czech Republic',
-    'DK': 'Denmark',
-    'EE': 'Estonia',
-    'FI': 'Finland',
-    'FR': 'France',
-    'DE': 'Germany',
-    'GR': 'Greece',
-    'HU': 'Hungary',
-    'IE': 'Ireland',
-    'LV': 'Latvia',
-    'LT': 'Lithuania',
-    'LU': 'Luxembourg',
-    'NL': 'Netherlands',
-    'PL': 'Poland',
-    'PT': 'Portugal',
-    'RO': 'Romania',
-    'SK': 'Slovakia',
-    'ES': 'Spain',
-    'SE': 'Sweden'
-}
-  
   help = 'Remplit la base de données avec les pays à partir d\'un fichier CSV.'
   
   def handle(self, *args, **options):
@@ -48,7 +24,7 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f"⛔ Ligne ignorée : Pas de code trouvé : {row}"))
                 continue
 
-            country_name = self.COUNTRY_CODE.get(country_code)
+            country_name = COUNTRY_CODE.get(country_code)
 
             if not country_name:
                 self.stdout.write(self.style.WARNING(f"⚠️ Code pays inconnu '{country_code}', ligne ignorée."))
