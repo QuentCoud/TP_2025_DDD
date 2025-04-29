@@ -13,9 +13,9 @@
     </nav>
 
     <div class="content">
-      <ArtistSearching />
-      <ConcertOwnerSearching />
-      <AdminCrud  />
+      <ArtistSearching v-if="currentUser.role == 'Artist'"/>
+      <ConcertOwnerSearching v-if="currentUser.role == 'ConcertOwner'"/>
+      <AdminCrud v-if="currentUser.role == 'Admin'"/>
     </div>
   </div>
 </template>
@@ -28,6 +28,8 @@ import { useRouter } from 'vue-router'
 import { useUser } from '@/stores/user.js'
 
 const userStore = useUser()
+
+const currentUser = userStore.getCurrentUser
 
 const router = useRouter()
 const showMenu = ref(false)

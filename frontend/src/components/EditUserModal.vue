@@ -9,33 +9,20 @@
           <input v-model="editedUser.username"/>
         </div>
         <div class="form-group">
-          <label>Mot de passe</label>
-          <input v-model="editedUser.password"/>
-        </div>
-        <div class="form-group">
-          <label>Rôle</label>
-          <select v-model="editedUser.role">
-            <option disabled value="">-- Choisissez un rôle --</option>
-            <option v-for="role in roles" :key="role" :value="role">
-              {{ role }}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
           <label>Pays</label>
           <select v-model="editedUser.country">
             <option disabled value="">-- Choisissez un pays --</option>
             <option v-for="country in countries" :key="country.code" :value="country.code">
-              {{ country.name }}
+              {{ country["name"] }}
             </option>
           </select>
         </div>
         <div class="form-group">
-          <label>Style musical</label>
-          <select v-model="editedUser.style">
-            <option disabled value="">-- Choisissez un style --</option>
-            <option v-for="style in styles" :key="style" :value="style">
-              {{ style }}
+          <label>Genre musical</label>
+          <select v-model="editedUser.genre">
+            <option disabled value="">-- Choisissez un genre --</option>
+            <option v-for="genre in genres" :key="genre" :value="genre">
+              {{ genre["name"] }}
             </option>
           </select>
         </div>
@@ -50,7 +37,7 @@
 
 <script setup>
 import { reactive, toRefs } from 'vue'
-import { styles, countries, roles } from '@/const.js' 
+import { genres, countries } from '@/const.js' 
 
 const props = defineProps({
   user: {

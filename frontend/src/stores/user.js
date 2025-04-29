@@ -13,5 +13,6 @@ export const useUser = defineStore('user', {
     }
   },
   getters: {
+    getCurrentUser: (state) => state.currentUser
   }
 })

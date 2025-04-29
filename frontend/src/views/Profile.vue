@@ -16,22 +16,37 @@
       <div class="card">
         <h2 class="card-title">Editez votre profile</h2>
         <h3>Nom d'utilisateur</h3>
-        <input />
-        <h3>Style musical</h3>
-        <div class="search-bar">
-          <select v-model="selectedStyle">
-            <option disabled value="">-- Choisissez un style --</option>
-            <option v-for="style in styles" :key="style" :value="style">
-              {{ style }}
+        <input 
+          v-model="form.username"
+          style="width: 92%;"
+        />
+        <h3 v-if="currentUser.role == 'Artist'">Followers</h3>
+        <input 
+          v-if="currentUser.role == 'Artist'"
+          v-model="form.followers"
+          style="width: 92%;"
+        />
+        <h3 v-if="currentUser.role == 'ConcertOwner'">Capacité</h3>
+        <input 
+          v-if="currentUser.role == 'ConcertOwner'"
+          v-model="form.capacity"
+          style="width: 92%;"
+        />
+        <h3 v-if="currentUser.role == 'Artist'">Genre musical</h3>
+        <div v-if="currentUser.role == 'Artist'" class="search-bar">
+          <select v-model="form.genre">
+            <option disabled value="">-- Choisissez un genre --</option>
+            <option v-for="genre in genres" :key="genre" :value="genre">
+              {{ genre["name"] }}
             </option>
           </select>
         </div>
         <h3>Localisation</h3>
         <div class="search-bar">
-          <select v-model="selectedCountryCode">
+          <select v-model="form.country">
             <option disabled value="">-- Choisissez un pays --</option>
             <option v-for="country in countries" :key="country.code" :value="country.code">
-              {{ country.name }}
+              {{ country["name"] }}
             </option>
           </select>
         </div>
@@ -43,16 +58,32 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { styles, countries } from '@/const.js' 
+import { genres, countries } from '@/const.js' 
 import { useUser } from '@/stores/user'
 
 const userStore = useUser()
 
 const router = useRouter()
 const showMenu = ref(false)
+const form = ref({
+  username: '',
+  genre: '',
+  country: '',
+})
+const currentUser = userStore.getCurrentUser
+
+if (currentUser) {
+  Object.assign(form.value, {
+    username: currentUser.username || '',
+    genre: currentUser.genre || '',
+    country: currentUser.country || '',
+    followers: currentUser.followers || '',
+    capacity: currentUser.capacity || '',
+  })
+}
 
 const updateUserProfile = () => {
-  alert("Profile updated successfully!")
+  // TODO : Implement the API call to update the user profile
 }
 
 const toggleMenu = () => {
@@ -70,6 +101,7 @@ const goToProfile = () => {
 const logout = () => {
   localStorage.removeItem('access')
   localStorage.removeItem('refresh')
+  userStore.clearUser()
   router.push({ name: 'Connexion' })
 }
 </script>

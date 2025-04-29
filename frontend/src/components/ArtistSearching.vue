@@ -1,11 +1,11 @@
 <template>
   <div class="card">
-    <h2 class="card-title">Sélectionnez votre style musical</h2>
+    <h2 class="card-title">Sélectionnez votre genre musical</h2>
     <div class="search-bar">
-      <select v-model="selectedStyle">
-        <option disabled value="">-- Choisissez un style --</option>
-        <option v-for="style in styles" :key="style" :value="style">
-          {{ style }}
+      <select v-model="selectedGenre">
+        <option disabled value="">-- Choisissez un genre --</option>
+        <option v-for="genre in genres" :key="genre" :value="genre">
+          {{ genre["name"] }}
         </option>
       </select>
       <button @click="search">Rechercher</button>
@@ -15,15 +15,15 @@
 
 <script setup>
 import { ref } from 'vue'
-import { styles } from '@/const.js' 
+import { genres } from '@/const.js' 
 
-const selectedStyle = ref('')
+const selectedGenre = ref('')
 
 const search = () => {
-  if (selectedStyle.value) {
-    alert(`Recherche : ${selectedStyle.value}`)
+  if (selectedGenre.value) {
+    // TODO : Implement the API call to search for country by genre
   } else {
-    alert('Veuillez sélectionner un style musical.')
+    alert('Veuillez sélectionner un genre musical.')
   }
 }
 </script>

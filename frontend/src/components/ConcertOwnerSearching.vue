@@ -5,7 +5,7 @@
       <select v-model="selectedCountryCode">
         <option disabled value="">-- Choisissez un pays --</option>
         <option v-for="country in countries" :key="country.code" :value="country.code">
-          {{ country.name }}
+          {{ country["name"] }}
         </option>
       </select>
       <button @click="search">Rechercher</button>
@@ -21,7 +21,7 @@ const selectedCountryCode = ref('')
 
 const search = () => {
   if (selectedCountryCode.value) {
-    alert(`Code pays sélectionné : ${selectedCountryCode.value}`)
+    // TODO : Implement the API call to search for artists by country
   } else {
     alert('Veuillez sélectionner un pays.')
   }

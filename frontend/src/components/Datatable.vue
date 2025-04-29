@@ -10,7 +10,7 @@
             <th>Mot de passe</th>
             <th>Rôle</th>
             <th>Pays</th>
-            <th>Style</th>
+            <th>Genre</th>
             <th>Modifier</th>
           </tr>
         </thead>
@@ -20,7 +20,7 @@
             <td>{{ user.password }}</td>
             <td>{{ user.role }}</td>
             <td>{{ getCountryName(user.country) }}</td>
-            <td>{{ user.style }}</td>
+            <td>{{ user.genre }}</td>
             <td>
               <button class="edit-btn" @click="openModal(user, index)">
                 <i class="mdi mdi-pencil"></i>
@@ -46,10 +46,11 @@ import { ref } from 'vue'
 import { countries } from '@/const.js' 
 import EditUserModal from './EditUserModal.vue'
 
+// TODO : Implement the API call to update the user profile
 const users = ref([
-  { username: 'JohnDoe', password: 'pass123', role: 'Administrateur', country: 'FR', style: 'Pop' },
-  { username: 'JaneSmith', password: '123456', role: 'Artiste', country: 'DE', style: 'Classique' },
-  { username: 'Alice', password: 'alicepwd', role: 'ConcertOwner', country: 'BE', style: 'Rock' },
+  { username: 'JohnDoe', password: 'pass123', role: 'Administrateur', country: 'FR', genre: 'Pop' },
+  { username: 'JaneSmith', password: '123456', role: 'Artiste', country: 'DE', genre: 'Classique' },
+  { username: 'Alice', password: 'alicepwd', role: 'ConcertOwner', country: 'BE', genre: 'Rock' },
 ])
 
 const showModal = ref(false)
@@ -67,10 +68,11 @@ const closeModal = () => {
 }
 
 const getCountryName = (code) => {
-  return countries.find(c => c.code === code)?.name || code
+  return countries.find(c => c["code"] === code)?.["name"] || code
 }
 
 const saveUser = (updatedUser) => {
+  // TODO : Implement the API call to update the user profile
   if (selectedIndex.value !== null) {
     users.value[selectedIndex.value] = updatedUser
   }

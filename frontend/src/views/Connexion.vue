@@ -9,7 +9,7 @@
         <select v-if="!isLogin" v-model="role">
           <option disabled value="">-- Choisissez un rôle --</option>
           <option v-for="role in roles" :key="role" :value="role">
-            {{ role }}
+            {{ role["name"] }}
           </option>
         </select>
         <button type="submit">{{ isLogin ? "Se connecter" : "S'inscrire" }}</button>
@@ -67,13 +67,13 @@ const submit = async () => {
       })
 
       userStore.setUser(userRes.data)
-
+      
       router.push({ name: 'Home' })
     } else {
       await axios.post('http://localhost:8000/api/signup', {
         username: username.value,
         password: password.value,
-        role: role.value,
+        role: role.value.code,
       })
       isLogin.value = true
     }
