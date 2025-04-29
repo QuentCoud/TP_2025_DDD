@@ -42,7 +42,6 @@ export const countries = [
 ]
 
 export const roles = [
-  'Artiste',
+  'Artist',
   'ConcertOwner',
-  'Administrateur',
 ]
