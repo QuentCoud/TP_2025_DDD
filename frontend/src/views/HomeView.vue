@@ -25,7 +25,10 @@ import ConcertOwnerSearching from '@/components/ConcertOwnerSearching.vue'
 import AdminCrud from '@/components/AdminCrud.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-const test = false
+import { useUser } from '@/stores/user.js'
+
+const userStore = useUser()
+
 const router = useRouter()
 const showMenu = ref(false)
 
@@ -44,6 +47,7 @@ const goToProfile = () => {
 const logout = () => {
   localStorage.removeItem('access')
   localStorage.removeItem('refresh')
+  userStore.clearUser()
   router.push({ name: 'Connexion' })
 }
 </script>

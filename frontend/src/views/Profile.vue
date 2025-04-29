@@ -44,6 +44,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { styles, countries } from '@/const.js' 
+import { useUser } from '@/stores/user'
+
+const userStore = useUser()
 
 const router = useRouter()
 const showMenu = ref(false)

@@ -29,7 +29,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { roles } from '@/const.js' 
+import { useUser } from '@/stores/user'
 
+const userStore = useUser()
 
 const router = useRouter()
 
@@ -48,18 +50,30 @@ const submit = async () => {
   try {
     error.value = ''
     if (isLogin.value) {
-      const res = await axios.post('http://localhost:8000/api/login/', {
+      const res = await axios.post('http://localhost:8000/api/login', {
         username: username.value,
         password: password.value,
       })
-      localStorage.setItem('access', res.data.access)
-      localStorage.setItem('refresh', res.data.refresh)
+      
+      const access = res.data.access
+      const refresh = res.data.refresh
+      localStorage.setItem('access', access)
+      localStorage.setItem('refresh', refresh)
+
+      const userRes = await axios.get('http://localhost:8000/api/me', {
+        headers: {
+          Authorization: `Bearer ${access}`
+        }
+      })
+
+      userStore.setUser(userRes.data)
+
       router.push({ name: 'Home' })
     } else {
-      await axios.post('http://localhost:8000/api/signup/', {
+      await axios.post('http://localhost:8000/api/signup', {
         username: username.value,
         password: password.value,
-        role: role.value
+        role: role.value,
       })
       isLogin.value = true
     }
@@ -67,6 +81,7 @@ const submit = async () => {
     error.value = e.response?.data?.detail || e.response?.data?.error || 'Erreur inconnue'
   }
 }
+
 
 </script>
 
