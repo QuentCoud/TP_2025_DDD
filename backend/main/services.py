@@ -48,9 +48,14 @@ class UserService:
     
     def getAllUsers(self):
         queryset = User.objects.exclude(role='admin')
-        serializer = UserSerializer(queryset, many=True)
-        
-        return serializer.data
+        res = []
+
+        for user in queryset:
+            user_model = self._getUserModel(user) 
+            user_serializer = self._getSerializer(user)   
+            res.append(user_serializer(user_model).data)
+
+        return res
 
     def updateMe(self, user, params):
         allowed_fields = ['genre', 'followers', 'adress', 'capacity']
