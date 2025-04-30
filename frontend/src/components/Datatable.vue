@@ -64,7 +64,6 @@ const fetchUsers = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     })
-    console.log("Response",res.data)
     users.value = res.data.map(user => {
       let genreObj = null
 
