@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from main.models import Country
+from main.models import Recommandation
 import csv
 import os
 from django.conf import settings
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             } 
             
             # Créer ou mettre à jour le pays
-            country, created = Country.objects.update_or_create(
+            country, created = Recommandation.objects.update_or_create(
                 slug=country_code,
                 defaults=field_mapping
             )

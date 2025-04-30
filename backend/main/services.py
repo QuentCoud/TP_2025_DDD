@@ -1,5 +1,5 @@
-from .models import Country, Artist, ConcertOwner, User, Admin
-from .serializers import CountrySerializer  , ConcertOwnerSerializer, ArtistSerializer, UserSerializer, AdminSerializer
+from .models import Recommandation, Artist, ConcertOwner, User, Admin
+from .serializers import RecommandationSerializer  , ConcertOwnerSerializer, ArtistSerializer, UserSerializer, AdminSerializer
 from .constants import COUNTRY_CODE, GENRE_MAPPING
 
 
@@ -94,12 +94,12 @@ class CountriesService:
         genre = [k for k, v in GENRE_MAPPING.items() if v == genre][0]
 
         if genre:
-            queryset = Country.objects.all().order_by(f'-{genre}')
+            queryset = Recommandation.objects.all().order_by(f'-{genre}')
         else:
-            queryset = Country.objects.all()
+            queryset = Recommandation.objects.all()
 
         queryset = queryset[:int(limit)]
-        serializer = CountrySerializer(queryset, many=True)
+        serializer = RecommandationSerializer(queryset, many=True)
 
         return serializer.data
     

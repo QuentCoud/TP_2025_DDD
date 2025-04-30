@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import User, Country, Artist, ConcertOwner
+from main.models import User, Recommandation, Artist, ConcertOwner
 from django.contrib.auth import password_validation
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -15,9 +15,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password_validation.validate_password(value)
         return value
     
-class CountrySerializer(serializers.ModelSerializer):
+class RecommandationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Country
+        model = Recommandation
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):

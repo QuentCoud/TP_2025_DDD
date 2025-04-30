@@ -10,15 +10,21 @@
             <th>Rôle</th>
             <th>Pays</th>
             <th>Genre</th>
+            <th>Followers</th>
+            <th>Capacité</th>
+            <th>Adresse</th>
             <th>Modifier</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(user, index) in users" :key="index">
-            <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>{{ getCountryName(user.country) }}</td>
-            <td>{{ user.genre }}</td>
+            <td>{{ user.user.username }}</td>
+            <td>{{ user.user.role }}</td>
+            <td>{{ getCountryName(user.user.country) }}</td>
+            <td>{{ user.genre?.name }}</td>
+            <td>{{ user.followers || '' }}</td>
+            <td>{{ user.capacity || '' }}</td>
+            <td>{{ user.adress }}</td>
             <td>
               <button class="edit-btn" @click="openModal(user, index)">
                 <i class="mdi mdi-pencil"></i>
@@ -41,7 +47,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { countries } from '@/const.js' 
+import { countries, genres } from '@/const.js' 
 import EditUserModal from './EditUserModal.vue'
 import axios from 'axios'
 
@@ -58,8 +64,26 @@ const fetchUsers = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     })
-    users.value = res.data
-    console.log('Utilisateurs récupérés :', users.value)
+    console.log("Response",res.data)
+    users.value = res.data.map(user => {
+      let genreObj = null
+
+      if (typeof user.genre === 'string') {
+        try {
+          const parsed = JSON.parse(user.genre.replace(/'/g, '"'))
+          genreObj = parsed
+        } catch {
+          genreObj = genres.find(g => g.code === user.genre) || { code: user.genre, name: user.genre }
+        }
+      } else if (typeof user.genre === 'object') {
+        genreObj = user.genre
+      }
+
+      return {
+        ...user,
+        genre: genreObj,
+      }
+    })
   } catch (e) {
     console.error('Erreur lors du chargement des utilisateurs :', e)
   }
@@ -84,7 +108,16 @@ const getCountryName = (code) => {
 }
 
 const saveUser = (updatedUser) => {
-  // TODO : Implement the API call to update the user profile
+  let genreObj = null
+
+  if (typeof updatedUser.genre === 'string') {
+    genreObj = genres.find(g => g.code === updatedUser.genre) || { code: updatedUser.genre, name: updatedUser.genre }
+  } else if (typeof updatedUser.genre === 'object') {
+    genreObj = updatedUser.genre
+  }
+
+  updatedUser.genre = genreObj
+
   if (selectedIndex.value !== null) {
     users.value[selectedIndex.value] = updatedUser
   }

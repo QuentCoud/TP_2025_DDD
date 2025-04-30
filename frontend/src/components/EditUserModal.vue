@@ -6,18 +6,22 @@
       <form @submit.prevent="save">
         <div class="form-group">
           <label>Nom d'utilisateur</label>
-          <input v-model="editedUser.username"/>
+          <input v-model="editedUser.user.username"/>
         </div>
         <div class="form-group">
           <label>Pays</label>
-          <select v-model="editedUser.country">
+          <select v-model="editedUser.user.country">
             <option disabled value="">-- Choisissez un pays --</option>
             <option v-for="country in countries" :key="country.code" :value="country.code">
               {{ country["name"] }}
             </option>
           </select>
         </div>
-        <div class="form-group">
+        <div v-if="user.user.role == 'artist'" class="form-group">
+          <label>Followers</label>
+          <input v-model="editedUser.followers"/>
+        </div>
+        <div v-if="user.user.role == 'artist'" class="form-group">
           <label>Genre musical</label>
           <select v-model="editedUser.genre">
             <option disabled value="">-- Choisissez un genre --</option>
@@ -25,6 +29,14 @@
               {{ genre["name"] }}
             </option>
           </select>
+        </div>
+        <div v-if="user.user.role == 'owner'" class="form-group">
+          <label>Capacité</label>
+          <input v-model="editedUser.capacity"/>
+        </div>
+        <div v-if="user.user.role == 'owner'" class="form-group">
+          <label>Adresse</label>
+          <input v-model="editedUser.adress"/>
         </div>
         <div class="modal-actions">
           <button type="button" class="cancel-btn" @click="close">Annuler</button>
@@ -38,6 +50,7 @@
 <script setup>
 import { reactive, toRefs } from 'vue'
 import { genres, countries } from '@/const.js' 
+import axios from 'axios'
 
 const props = defineProps({
   user: {
@@ -52,15 +65,40 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'save'])
 
-// Copie locale de l'utilisateur pour pouvoir éditer sans modifier directement l'original
 const editedUser = reactive({ ...props.user })
 
 const close = () => {
   emit('close')
 }
+const save = async () => {
+  try {
+    const accessToken = localStorage.getItem('access')
 
-const save = () => {
-  emit('save', { ...editedUser })
+    const payload = {
+      id: editedUser.user.id,
+      user: {
+        username: editedUser.user.username,
+        country: editedUser.user.country,
+        role: editedUser.user.role,
+      },
+      genre: editedUser.genre.code,
+      followers: editedUser.followers,
+      capacity: editedUser.capacity,
+      adress: editedUser.adress,
+    }
+
+    const res = await axios.post('http://localhost:8000/api/user', payload, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+
+    emit('save', res.data)
+    close()
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour :', error)
+    alert("Une erreur est survenue lors de l'enregistrement.")
+  }
 }
 </script>
 

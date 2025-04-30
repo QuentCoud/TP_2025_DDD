@@ -24,7 +24,7 @@ class  ConcertOwner(models.Model):
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-class Country(models.Model):
+class Recommandation(models.Model):
     id = models.AutoField(primary_key=True)
     slug = models.CharField(max_length=5, unique=True)
     name = models.CharField(max_length=255)
