@@ -9,14 +9,20 @@
         </option>
       </select>
       <button @click="search">Rechercher</button>
-      <div v-if="searchResults.length > 0" class="results">
+    </div>
+    <div v-if="searchResults.length > 0" class="results">
       <h3>Artistes trouvés :</h3>
       <ul>
         <li v-for="artist in searchResults" :key="artist.user.id">
-          {{ artist.user.username }} - Genre : {{ artist.genre }}
+          {{ artist.user.username }} - Genre :
+          {{
+            parseGenre(artist.genre)
+          }}
         </li>
       </ul>
     </div>
+    <div v-else-if="hasSearched" class="results">
+      <h3>Aucun résultat</h3>
     </div>
   </div>
 </template>
@@ -26,7 +32,7 @@ import { ref } from 'vue'
 import { countries } from '@/const.js' 
 import axios from 'axios'
 const searchResults = ref([])
-
+const hasSearched = ref(false)
 
 const selectedCountryCode = ref('')
 
@@ -46,11 +52,21 @@ const search = async () => {
         }
       }
     )
-
     searchResults.value = response.data
+    hasSearched.value = true
   } catch (error) {
     console.error('Erreur lors de la recherche d’artistes :', error)
     alert('Erreur lors de la recherche.')
+    hasSearched.value = true
+  }
+}
+
+const parseGenre = (genre) => {
+  try {
+    const parsed = JSON.parse(genre.replace(/'/g, '"'))
+    return parsed.name || genre
+  } catch (e) {
+    return genre
   }
 }
 </script>

@@ -46,7 +46,6 @@ const search = async () => {
       }
     )
     searchResults.value = response.data
-    console.log('Résultats de la recherche :', searchResults.value)
   } catch (error) {
     console.error('Erreur lors de la recherche de pays :', error)
     alert('Erreur lors de la recherche.')

@@ -14,8 +14,8 @@
 
     <div class="content">
       <ArtistSearching v-if="currentUser.user.role == 'artist'"/>
-      <ConcertOwnerSearching v-if="currentUser.user.role == 'ConcertOwner'"/>
-      <AdminCrud v-if="currentUser.user.role == 'Admin'"/>
+      <ConcertOwnerSearching v-if="currentUser.user.role == 'owner'"/>
+      <AdminCrud v-if="currentUser.user.role == 'admin'"/>
     </div>
   </div>
 </template>
