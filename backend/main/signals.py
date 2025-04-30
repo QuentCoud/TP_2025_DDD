@@ -7,7 +7,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.role == 'artist':
             Artist.objects.create(user=instance)
-        elif instance.role == 'concert_owner':
+        elif instance.role == 'owner':
             ConcertOwner.objects.create(user=instance)
         elif instance.role == 'admin':
             adm = Admin.objects.create(user=instance)

@@ -34,7 +34,9 @@ class UserService:
 
     def getMe(self, user):
         serializer = self._getSerializer(user)
-        return serializer(self._getUserModel(user)).data
+        model = self._getUserModel(user)
+
+        return serializer(model).data
 
     def getUser(self, id):
         try:
