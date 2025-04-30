@@ -26,10 +26,16 @@
           v-model="form.followers"
           style="width: 92%;"
         />
-        <h3 v-if="currentUser.user.role == 'ConcertOwner'">Capacité</h3>
+        <h3 v-if="currentUser.user.role == 'owner'">Capacité</h3>
         <input 
-          v-if="currentUser.user.role == 'ConcertOwner'"
+          v-if="currentUser.user.role == 'owner'"
           v-model="form.capacity"
+          style="width: 92%;"
+        />
+        <h3 v-if="currentUser.user.role == 'owner'">Adresse</h3>
+        <input 
+          v-if="currentUser.user.role == 'owner'"
+          v-model="form.adress"
           style="width: 92%;"
         />
         <h3 v-if="currentUser.user.role == 'artist'">Genre musical</h3>
@@ -72,6 +78,7 @@ const form = ref({
   genre: '',
   followers: '',
   capacity: '',
+  adress: '',
 })
 
 const currentUser = userStore.getCurrentUser
@@ -93,6 +100,7 @@ if (currentUser) {
     genre: parsedGenre,
     followers: currentUser.followers || '',
     capacity: currentUser.capacity || '',
+    adress: currentUser.adress || '',
   })
 }
 

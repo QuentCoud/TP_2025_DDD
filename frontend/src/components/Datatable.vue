@@ -7,7 +7,6 @@
         <thead>
           <tr>
             <th>Username</th>
-            <th>Mot de passe</th>
             <th>Rôle</th>
             <th>Pays</th>
             <th>Genre</th>
@@ -17,7 +16,6 @@
         <tbody>
           <tr v-for="(user, index) in users" :key="index">
             <td>{{ user.username }}</td>
-            <td>{{ user.password }}</td>
             <td>{{ user.role }}</td>
             <td>{{ getCountryName(user.country) }}</td>
             <td>{{ user.genre }}</td>
@@ -42,20 +40,34 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { countries } from '@/const.js' 
 import EditUserModal from './EditUserModal.vue'
+import axios from 'axios'
 
-// TODO : Implement the API call to update the user profile
-const users = ref([
-  { username: 'JohnDoe', password: 'pass123', role: 'Administrateur', country: 'FR', genre: 'Pop' },
-  { username: 'JaneSmith', password: '123456', role: 'Artiste', country: 'DE', genre: 'Classique' },
-  { username: 'Alice', password: 'alicepwd', role: 'ConcertOwner', country: 'BE', genre: 'Rock' },
-])
-
+const users = ref([])
 const showModal = ref(false)
 const selectedUser = ref({})
 const selectedIndex = ref(null)
+const accessToken = localStorage.getItem('access')
+
+const fetchUsers = async () => {
+  try {
+    const res = await axios.get('http://localhost:8000/api/user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    users.value = res.data
+    console.log('Utilisateurs récupérés :', users.value)
+  } catch (e) {
+    console.error('Erreur lors du chargement des utilisateurs :', e)
+  }
+}
+
+onMounted(() => {
+  fetchUsers()
+})
 
 const openModal = (user, index) => {
   selectedUser.value = { ...user }
